@@ -1,0 +1,134 @@
+{
+  "info": {
+    "name": "Food Connect",
+    "description": "API collection for Food Connect Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Donor",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Sunrise Hotel\",\n  \"email\": \"hotel@demo.com\",\n  \"password\": \"Donor@123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"DONOR\",\n  \"donorType\": \"HOTEL\",\n  \"address\": \"MG Road\",\n  \"city\": \"Bangalore\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946\n}"
+            },
+            "url": { "raw": "http://localhost:8081/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"jwt_token\", jsonData.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hotel@demo.com\",\n  \"password\": \"Donor@123\"\n}"
+            },
+            "url": { "raw": "http://localhost:8081/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:8081/api/auth/me", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Donations",
+      "item": [
+        {
+          "name": "Create Donation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"foodName\": \"Biryani\",\n  \"foodType\": \"VEG\",\n  \"quantity\": 50,\n  \"cookedAt\": \"2024-05-10T12:00:00\",\n  \"expiresAt\": \"2024-05-10T20:00:00\",\n  \"pickupAddress\": \"MG Road\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"contactNumber\": \"9876543210\",\n  \"notificationRadiusKm\": 10\n}"
+            },
+            "url": { "raw": "http://localhost:8082/api/donations", "protocol": "http", "host": ["localhost"], "port": "8082", "path": ["api", "donations"] }
+          }
+        },
+        {
+          "name": "Get Nearby Donations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:8082/api/donations/nearby?lat=12.97&lng=77.59", "protocol": "http", "host": ["localhost"], "port": "8082", "path": ["api", "donations", "nearby"], "query": [ { "key": "lat", "value": "12.97" }, { "key": "lng", "value": "77.59" } ] }
+          }
+        },
+        {
+          "name": "Accept Donation",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:8082/api/donations/1/accept?ngoId=1", "protocol": "http", "host": ["localhost"], "port": "8082", "path": ["api", "donations", "1", "accept"], "query": [ { "key": "ngoId", "value": "1" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tracking & Notifications",
+      "item": [
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:8083/api/notifications/unread", "protocol": "http", "host": ["localhost"], "port": "8083", "path": ["api", "notifications", "unread"] }
+          }
+        },
+        {
+          "name": "Post Live Location (Fallback)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 12.9720,\n  \"longitude\": 77.5950,\n  \"speedKmh\": 15.5\n}"
+            },
+            "url": { "raw": "http://localhost:8083/api/tracking/1/location", "protocol": "http", "host": ["localhost"], "port": "8083", "path": ["api", "tracking", "1", "location"] }
+          }
+        }
+      ]
+    }
+  ]
+}
